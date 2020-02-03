@@ -1,7 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 
-import { View, Animated } from 'react-native';
+import { View, Animated, TouchableWithoutFeedback } from 'react-native';
 import styles from './style';
 
 import type { valueXY } from '../types';
@@ -18,6 +18,7 @@ type Props = {
   animationDuration: number,
   animated: boolean,
   backdropColor: string,
+    onPress: func,
 };
 
 type State = {
@@ -58,10 +59,14 @@ class ViewMask extends Component<Props, State> {
       this.setState({ animated: this.props.animated });
     }
   }
-
     _press = () =>
     {
         console.warn('press');
+        const { onPress, currentStep } = this.props;
+        if(onPress)
+        {
+            onPress(currentStep);
+        }
     }
 
   render() {
@@ -120,18 +125,20 @@ class ViewMask extends Component<Props, State> {
             },
           ]}
         />
-          <Animated.View
-              style={[
-                  styles.overlayRectangle,
-                  {
-                      right: rightFromWidthEnd,
-                      top: position.x,
-                      bottom: bottomFromHeightBottom,
-                      left: position.y,,
-                  }]}
-          >
-              <TouchableWithoutFeedback onPress={this._press}/>
-          </Animated.View>
+
+          <TouchableWithoutFeedback onPress={this._press}>
+              <Animated.View
+                  style={[
+                      styles.overlayRectangle,
+                      {
+                          right: rightFromWidthEnd,
+                          top: position.x,
+                          bottom: bottomFromHeightBottom,
+                          left: position.y,
+                      }]}
+              >
+              </Animated.View>
+          </TouchableWithoutFeedback>
       </View>
     );
   }

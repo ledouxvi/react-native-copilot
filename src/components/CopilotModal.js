@@ -10,6 +10,7 @@ type Props = {
   stop: () => void,
   next: () => void,
   prev: () => void,
+  onPress: () => void,
   currentStepNumber: number,
   currentStep: ?Step,
   visible: boolean,
@@ -225,6 +226,15 @@ class CopilotModal extends Component<Props, State> {
     this.props.stop();
   }
 
+  _press = () =>
+  {
+    const { onPress, currentStep } = this.props;
+    if(onPress)
+    {
+      onPress(currentStep);
+    }
+  }
+
   renderMask() {
     /* eslint-disable global-require */
     const MaskComponent = this.props.overlay === 'svg'
@@ -238,6 +248,7 @@ class CopilotModal extends Component<Props, State> {
         style={styles.overlayContainer}
         size={this.state.size}
         position={this.state.position}
+        onPress={this._press}
         easing={this.props.easing}
         animationDuration={this.props.animationDuration}
         backdropColor={this.props.backdropColor}

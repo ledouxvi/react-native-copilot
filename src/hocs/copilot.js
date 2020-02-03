@@ -160,6 +160,12 @@ const copilot = ({
         this.eventEmitter.emit('stop');
       }
 
+      _onPressCopilot = (current) =>
+      {
+
+        this.eventEmitter.emit('copilotOnPress', current);
+      }
+
       async moveToCurrentStep(): void {
         const size = await this.state.currentStep.target.measure();
 
@@ -185,6 +191,7 @@ const copilot = ({
               next={this.next}
               prev={this.prev}
               stop={this.stop}
+              onPress={this._onPressCopilot}
               visible={this.state.visible}
               isFirstStep={this.isFirstStep()}
               isLastStep={this.isLastStep()}
