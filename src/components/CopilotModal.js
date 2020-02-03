@@ -52,7 +52,7 @@ class CopilotModal extends Component<Props, State> {
     overlay: typeof NativeModules.RNSVGSvgViewManager !== 'undefined' ? 'svg' : 'view',
     // If animated was not specified, rely on the default overlay type
     animated: typeof NativeModules.RNSVGSvgViewManager !== 'undefined',
-    androidStatusBarVisible: false,
+    androidStatusBarVisible: true,
     backdropColor: 'rgba(0, 0, 0, 0.4)',
     labels: {},
   };
@@ -68,8 +68,8 @@ class CopilotModal extends Component<Props, State> {
     containerVisible: false,
   };
 
-  componentDidUpdate(prevProps: Props) {
-    if (prevProps.visible === true && this.props.visible === false) {
+  componentWillReceiveProps(nextProps: Props) {
+    if (this.props.visible === true && nextProps.visible === false) {
       this.reset();
     }
   }

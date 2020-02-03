@@ -32,9 +32,9 @@ class ViewMask extends Component<Props, State> {
     position: new Animated.ValueXY({ x: 0, y: 0 }),
   };
 
-  componentDidUpdate(prevProps) {
-    if (prevProps.position !== this.props.position || prevProps.size !== this.props.size) {
-      this.animate(this.props.size, this.props.position);
+  componentWillReceiveProps(nextProps) {
+    if (this.props.position !== nextProps.position || this.props.size !== nextProps.size) {
+      this.animate(nextProps.size, nextProps.position);
     }
   }
 
@@ -59,6 +59,11 @@ class ViewMask extends Component<Props, State> {
     }
   }
 
+    _press = () =>
+    {
+        console.warn('press');
+    }
+
   render() {
     const { size, position } = this.state;
     const width = this.props.layout ? this.props.layout.width : 500;
@@ -66,15 +71,17 @@ class ViewMask extends Component<Props, State> {
 
     const leftOverlayRight = Animated.add(width, Animated.multiply(position.x, -1));
     const rightOverlayLeft = Animated.add(size.x, position.x);
+    const bottomFromHeightBottom = Animated.add(height, Animated.multiply(-1, Animated.add(size.y, position.y)));
     const bottomOverlayTopBoundary = Animated.add(size.y, position.y);
     const topOverlayBottomBoundary = Animated.add(height, Animated.multiply(-1, position.y));
+    const rightFromWidthEnd = Animated.add(width, Animated.multiply(-1, rightOverlayLeft));
     const verticalOverlayLeftBoundary = position.x;
     const verticalOverlayRightBoundary = Animated.add(
       width, Animated.multiply(-1, rightOverlayLeft),
     );
 
     return (
-      <View style={this.props.style}>
+      <View pointerEvents="box-none" style={this.props.style}>
         <Animated.View
           style={[
             styles.overlayRectangle,
@@ -113,6 +120,18 @@ class ViewMask extends Component<Props, State> {
             },
           ]}
         />
+          <Animated.View
+              style={[
+                  styles.overlayRectangle,
+                  {
+                      right: rightFromWidthEnd,
+                      top: position.x,
+                      bottom: bottomFromHeightBottom,
+                      left: position.y,,
+                  }]}
+          >
+              <TouchableWithoutFeedback onPress={this._press}/>
+          </Animated.View>
       </View>
     );
   }
