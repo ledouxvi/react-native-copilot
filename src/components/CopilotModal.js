@@ -164,13 +164,13 @@ class CopilotModal extends Component<Props, State> {
 
     if (this.state.animated) {
       Animated
-        .parallel(Object.keys(animate)
-          .map(key => Animated.timing(this.state.animatedValues[key], {
-            toValue: animate[key],
-            duration: this.props.animationDuration,
-            easing: this.props.easing,
-          })))
-        .start();
+          .parallel(Object.keys(animate)
+              .map(key => Animated.timing(this.state.animatedValues[key], {
+                toValue: animate[key],
+                duration: this.props.animationDuration,
+                easing: this.props.easing,
+              })))
+          .start();
     } else {
       Object.keys(animate).forEach((key) => {
         this.state.animatedValues[key].setValue(animate[key]);
@@ -196,11 +196,11 @@ class CopilotModal extends Component<Props, State> {
   animateMove(obj = {}): void {
     return new Promise((resolve) => {
       this.setState(
-        { containerVisible: true },
-        () => requestAnimationFrame(async () => {
-          await this._animateMove(obj);
-          resolve();
-        }),
+          { containerVisible: true },
+          () => requestAnimationFrame(async () => {
+            await this._animateMove(obj);
+            resolve();
+          }),
       );
     });
   }
@@ -238,22 +238,22 @@ class CopilotModal extends Component<Props, State> {
   renderMask() {
     /* eslint-disable global-require */
     const MaskComponent = this.props.overlay === 'svg'
-      ? require('./SvgMask').default
-      : require('./ViewMask').default;
+        ? require('./SvgMask').default
+        : require('./ViewMask').default;
     /* eslint-enable */
     return (
-      <MaskComponent
-        animated={this.props.animated}
-        layout={this.state.layout}
-        style={styles.overlayContainer}
-        size={this.state.size}
-        position={this.state.position}
-        onPress={this._press}
-        easing={this.props.easing}
-        animationDuration={this.props.animationDuration}
-        backdropColor={this.props.backdropColor}
-        svgMaskPath={this.props.svgMaskPath}
-      />
+        <MaskComponent
+            animated={this.props.animated}
+            layout={this.state.layout}
+            style={styles.overlayContainer}
+            size={this.state.size}
+            position={this.state.position}
+            onPress={this._press}
+            easing={this.props.easing}
+            animationDuration={this.props.animationDuration}
+            backdropColor={this.props.backdropColor}
+            svgMaskPath={this.props.svgMaskPath}
+        />
     );
   }
 
@@ -265,32 +265,32 @@ class CopilotModal extends Component<Props, State> {
 
     return [
       <Animated.View
-        key="stepNumber"
-        style={[
-          styles.stepNumberContainer,
-          {
-            left: this.state.animatedValues.stepNumberLeft,
-            top: Animated.add(this.state.animatedValues.top, -STEP_NUMBER_RADIUS),
-          },
-        ]}
+          key="stepNumber"
+          style={[
+            styles.stepNumberContainer,
+            {
+              left: this.state.animatedValues.stepNumberLeft,
+              top: Animated.add(this.state.animatedValues.top, -STEP_NUMBER_RADIUS),
+            },
+          ]}
       >
-        <StepNumberComponent
-          isFirstStep={this.props.isFirstStep}
-          isLastStep={this.props.isLastStep}
-          currentStep={this.props.currentStep}
-          currentStepNumber={this.props.currentStepNumber}
-        />
+        {/* <StepNumberComponent
+            isFirstStep={this.props.isFirstStep}
+            isLastStep={this.props.isLastStep}
+            currentStep={this.props.currentStep}
+            currentStepNumber={this.props.currentStepNumber}
+        />*/}
       </Animated.View>,
       <Animated.View key="arrow" style={[styles.arrow, this.state.arrow]} />,
       <Animated.View key="tooltip" style={[styles.tooltip, this.props.tooltipStyle, this.state.tooltip]}>
         <TooltipComponent
-          isFirstStep={this.props.isFirstStep}
-          isLastStep={this.props.isLastStep}
-          currentStep={this.props.currentStep}
-          handleNext={this.handleNext}
-          handlePrev={this.handlePrev}
-          handleStop={this.handleStop}
-          labels={this.props.labels}
+            isFirstStep={this.props.isFirstStep}
+            isLastStep={this.props.isLastStep}
+            currentStep={this.props.currentStep}
+            handleNext={this.handleNext}
+            handlePrev={this.handlePrev}
+            handleStop={this.handleStop}
+            labels={this.props.labels}
         />
       </Animated.View>,
     ];
@@ -301,21 +301,21 @@ class CopilotModal extends Component<Props, State> {
     const contentVisible = this.state.layout && containerVisible;
 
     return (
-      <Modal
-        animationType="none"
-        visible={containerVisible}
-        onRequestClose={noop}
-        transparent
-        supportedOrientations={['portrait', 'landscape']}
-      >
-        <View
-          style={styles.container}
-          onLayout={this.handleLayoutChange}
+        <Modal
+            animationType="none"
+            visible={containerVisible}
+            onRequestClose={noop}
+            transparent
+            supportedOrientations={['portrait', 'landscape']}
         >
-          {contentVisible && this.renderMask()}
-          {contentVisible && this.renderTooltip()}
-        </View>
-      </Modal>
+          <View
+              style={styles.container}
+              onLayout={this.handleLayoutChange}
+          >
+            {contentVisible && this.renderMask()}
+            {contentVisible && this.renderTooltip()}
+          </View>
+        </Modal>
     );
   }
 }
