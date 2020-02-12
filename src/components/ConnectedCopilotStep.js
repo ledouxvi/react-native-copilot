@@ -58,7 +58,7 @@ class ConnectedCopilotStep extends Component<Props> {
       wrapper: this.wrapper,
     });
   }
-
+  
   isRegister() {
     return this.props._copilot.isRegisterStep(this.wrapper, this.props.name);
   }
@@ -92,6 +92,10 @@ class ConnectedCopilotStep extends Component<Props> {
                   x: sizeResolved.x, y: sizeResolved.y - offset, width: sizeResolved.width, height: sizeResolved.height,
                 });
               }
+              else
+              {
+                resolve(false);
+              }
               return;
             }
               if (this.wrapper.measureInWindow)
@@ -101,21 +105,21 @@ class ConnectedCopilotStep extends Component<Props> {
                     console.warn('measureInWindow2', {
                       x, y, width, height,
                     });
-
+        
                       resolve({
                         x,
                         y,
                         width,
                         height,
                       });
-
+                    
                   });
               }
               else
               {
                 requestAnimationFrame(measure);
               }
-
+            
           }
           else {
             if (this.wrapper.measure)
@@ -140,7 +144,7 @@ class ConnectedCopilotStep extends Component<Props> {
       requestAnimationFrame(measure);
     });
   }
-
+  
   _measureLayout(flatList) {
     return new Promise(async (resolve, reject) => {
       console.warn('promise');

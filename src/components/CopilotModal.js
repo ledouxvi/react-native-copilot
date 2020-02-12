@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from 'react';
-import { Animated, Easing, View, NativeModules, Modal, StatusBar, Platform, Text } from 'react-native';
+import { Animated, Easing, View, NativeModules, Modal, StatusBar, Platform, Text, TouchableOpacity } from 'react-native';
 import Tooltip from './Tooltip';
 import StepNumber from './StepNumber';
 import styles, { MARGIN, ARROW_SIZE, STEP_NUMBER_DIAMETER, STEP_NUMBER_RADIUS } from './style';
@@ -57,7 +57,7 @@ class CopilotModal extends Component<Props, State> {
     backdropColor: 'rgba(0, 0, 0, 0.4)',
     labels: {},
   };
-
+  
   state = {
     tooltip: {},
     arrow: {},
@@ -68,31 +68,31 @@ class CopilotModal extends Component<Props, State> {
     animated: false,
     containerVisible: false,
   };
-
+  
   componentWillReceiveProps(nextProps: Props) {
     if (this.props.visible === true && nextProps.visible === false) {
       this.reset();
     }
   }
-
+  
   layout = {
     width: 0,
     height: 0,
   }
-
+  
   handleLayoutChange = ({ nativeEvent: { layout } }) => {
     console.warn('handleChange', layout)
     this.layout = layout;
   }
-
+  
   measure(): Promise {
     if (typeof __TEST__ !== 'undefined' && __TEST__) { // eslint-disable-line no-undef
       return new Promise(resolve => resolve({
         x: 0, y: 0, width: 0, height: 0,
       }));
     }
-
-
+    
+    
     return new Promise((resolve) => {
       const setLayout = () => {
         if (this.layout.width !== 0) {
@@ -104,15 +104,15 @@ class CopilotModal extends Component<Props, State> {
       setLayout();
     });
   }
-
+  
   async _animateMove(obj = {}): void {
     const layout = await this.measure();
     if (!this.props.androidStatusBarVisible && Platform.OS === 'android') {
       obj.top -= StatusBar.currentHeight; // eslint-disable-line no-param-reassign
     }
-
+    
     let stepNumberLeft = obj.left - STEP_NUMBER_RADIUS;
-
+    
     if (stepNumberLeft < 0) {
       stepNumberLeft = (obj.left + obj.width) - STEP_NUMBER_RADIUS;
       if (stepNumberLeft > layout.width - STEP_NUMBER_DIAMETER) {
@@ -124,18 +124,18 @@ class CopilotModal extends Component<Props, State> {
       x: obj.left + (obj.width / 2),
       y: obj.top + (obj.height / 2),
     };
-
+    
     const relativeToLeft = center.x;
     const relativeToTop = center.y;
     const relativeToBottom = Math.abs(center.y - layout.height);
     const relativeToRight = Math.abs(center.x - layout.width);
-
+    
     const verticalPosition = relativeToBottom > relativeToTop ? 'bottom' : 'top';
     const horizontalPosition = relativeToLeft > relativeToRight ? 'left' : 'right';
-
+    
     const tooltip = {};
     const arrow = {};
-
+    
     if (verticalPosition === 'bottom') {
       tooltip.top = obj.top + obj.height + MARGIN;
       arrow.borderBottomColor = '#fff';
@@ -147,7 +147,7 @@ class CopilotModal extends Component<Props, State> {
       arrow.bottom = tooltip.bottom - (ARROW_SIZE * 2);
       this.buttonToTop = true;
     }
-
+    
     if (horizontalPosition === 'left') {
       tooltip.right = Math.max(layout.width - (obj.left + obj.width), 0);
       tooltip.right = tooltip.right === 0 ? tooltip.right + MARGIN : tooltip.right;
@@ -159,12 +159,12 @@ class CopilotModal extends Component<Props, State> {
       tooltip.maxWidth = layout.width - tooltip.left - MARGIN;
       arrow.left = tooltip.left + MARGIN;
     }
-
+    
     const animate = {
       top: obj.top,
       stepNumberLeft,
     };
-
+    
     if (this.state.animated) {
       Animated
           .parallel(Object.keys(animate)
@@ -179,7 +179,7 @@ class CopilotModal extends Component<Props, State> {
         this.state.animatedValues[key].setValue(animate[key]);
       });
     }
-
+    
     this.setState({
       tooltip,
       arrow,
@@ -195,7 +195,7 @@ class CopilotModal extends Component<Props, State> {
       },
     });
   }
-
+  
   animateMove(obj = {}): void {
     return new Promise((resolve) => {
       this.setState(
@@ -207,7 +207,7 @@ class CopilotModal extends Component<Props, State> {
       );
     });
   }
-
+  
   reset(): void {
     this.setState({
       animated: false,
@@ -215,21 +215,21 @@ class CopilotModal extends Component<Props, State> {
       layout: undefined,
     });
   }
-
+  
   handleNext = () => {
     this.props.next();
   }
-
+  
   handlePrev = () => {
     this.props.prev();
   }
-
+  
   handleStop = () => {
     this.reset();
     /*this.props.stop();*/
     this._press();
   }
-
+  
   _press = () =>
   {
     const { onPress, currentStep } = this.props;
@@ -238,7 +238,7 @@ class CopilotModal extends Component<Props, State> {
       onPress(currentStep);
     }
   }
-
+  
   renderMask() {
     /* eslint-disable global-require */
     const MaskComponent = this.props.overlay === 'svg'
@@ -260,13 +260,15 @@ class CopilotModal extends Component<Props, State> {
         />
     );
   }
-
+  
   renderTooltip() {
     const {
       tooltipComponent: TooltipComponent,
+      labelLeave,
+      onPressLeave,
       stepNumberComponent: StepNumberComponent,
     } = this.props;
-
+    
     return [
       <Animated.View
           key="stepNumber"
@@ -285,7 +287,11 @@ class CopilotModal extends Component<Props, State> {
             currentStepNumber={this.props.currentStepNumber}
         />*/}
       </Animated.View>,
-        <View style={{ position: 'absolute', backgroundColor: '#555657', padding: 6, bottom: this.buttonToTop ? undefined : 10, top: this.buttonToTop ? 10 : undefined }}><Text>Quitter le tutoriel</Text></View>,
+      <View style={{ position: 'absolute', left: 0, right: 0, bottom: this.buttonToTop ? undefined : 10, top: this.buttonToTop ? 10 : undefined, justifyContent: 'center', alignItems: 'center' }}>
+        <TouchableOpacity style={{ backgroundColor: '#555657', padding: 6, borderRadius: 10, justifyContent: 'center', alignItems: 'center' }} onPress={onPressLeave}>
+          <Text style={{ color: '#FFFFFF', fontSize: 20}}>{labelLeave}</Text>
+        </TouchableOpacity>
+      </View>,
       <Animated.View key="arrow" style={[styles.arrow, this.state.arrow]} />,
       <Animated.View key="tooltip" style={[styles.tooltip, this.props.tooltipStyle, this.state.tooltip]}>
         <TooltipComponent
@@ -301,11 +307,11 @@ class CopilotModal extends Component<Props, State> {
       </Animated.View>,
     ];
   }
-
+  
   render() {
     const containerVisible = this.state.containerVisible || this.props.visible;
     const contentVisible = this.state.layout && containerVisible;
-
+    
     return (
         <Modal
             animationType="none"

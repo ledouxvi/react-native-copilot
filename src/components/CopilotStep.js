@@ -16,14 +16,14 @@ class CopilotStep extends Component<Props> {
   static contextTypes = {
     _copilot: PropTypes.object,
   }
-
+  
   context: {
     _copilot: CopilotContext,
   }
-
+  
   render() {
     const currentStep = this.context._copilot.getCurrentStep();
-
+    
     return createElement(
         ConnectedCopilotStep,
         {

@@ -11,6 +11,7 @@ export type CopilotContext = {
   registerStep: (Step) => void,
   unregisterStep: (name: string) => void,
   getCurrentStep: () => Step,
+  isRegisterStep: (name: string) => boolean,
 }
 
 export type valueXY = {
