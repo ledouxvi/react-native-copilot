@@ -25,12 +25,12 @@ class CopilotStep extends Component<Props> {
     const currentStep = this.context._copilot.getCurrentStep();
 
     return createElement(
-      ConnectedCopilotStep,
-      {
-        ...this.props,
-        _copilot: this.context._copilot,
-        visible: currentStep && currentStep.name === this.props.name,
-      },
+        ConnectedCopilotStep,
+        {
+          ...this.props,
+          _copilot: this.context._copilot,
+          visible: currentStep && currentStep.name === this.props.name,
+        },
     );
   }
 }

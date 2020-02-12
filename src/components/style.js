@@ -24,14 +24,12 @@ export default StyleSheet.create({
   },
   tooltip: {
     position: 'absolute',
-    paddingTop: 15,
-    paddingHorizontal: 15,
-    backgroundColor: '#fff',
-    borderRadius: 3,
     overflow: 'hidden',
   },
   tooltipText: {
-
+    textAlign: 'center',
+    fontSize: 20,
+    color: '#2F2F30'
   },
   tooltipContainer: {
     flex: 1,
@@ -65,9 +63,12 @@ export default StyleSheet.create({
   },
   bottomBar: {
     marginTop: 10,
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
+    flex: 1,
   },
+	topBar: {
+		marginBottom: 10,
+		flex: 1,
+	},
   overlayRectangle: {
     position: 'absolute',
     backgroundColor: 'rgba(0,0,0,0.2)',

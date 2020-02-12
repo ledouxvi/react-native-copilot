@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from 'react';
-import { Animated, Easing, View, NativeModules, Modal, StatusBar, Platform } from 'react-native';
+import { Animated, Easing, View, NativeModules, Modal, StatusBar, Platform, Text } from 'react-native';
 import Tooltip from './Tooltip';
 import StepNumber from './StepNumber';
 import styles, { MARGIN, ARROW_SIZE, STEP_NUMBER_DIAMETER, STEP_NUMBER_RADIUS } from './style';
@@ -81,6 +81,7 @@ class CopilotModal extends Component<Props, State> {
   }
 
   handleLayoutChange = ({ nativeEvent: { layout } }) => {
+    console.warn('handleChange', layout)
     this.layout = layout;
   }
 
@@ -118,7 +119,7 @@ class CopilotModal extends Component<Props, State> {
         stepNumberLeft = layout.width - STEP_NUMBER_DIAMETER;
       }
     }
-
+    console.warn('obvj', obj);
     const center = {
       x: obj.left + (obj.width / 2),
       y: obj.top + (obj.height / 2),
@@ -139,10 +140,12 @@ class CopilotModal extends Component<Props, State> {
       tooltip.top = obj.top + obj.height + MARGIN;
       arrow.borderBottomColor = '#fff';
       arrow.top = tooltip.top - (ARROW_SIZE * 2);
+      this.buttonToTop = false;
     } else {
       tooltip.bottom = layout.height - (obj.top - MARGIN);
       arrow.borderTopColor = '#fff';
       arrow.bottom = tooltip.bottom - (ARROW_SIZE * 2);
+      this.buttonToTop = true;
     }
 
     if (horizontalPosition === 'left') {
@@ -223,7 +226,8 @@ class CopilotModal extends Component<Props, State> {
 
   handleStop = () => {
     this.reset();
-    this.props.stop();
+    /*this.props.stop();*/
+    this._press();
   }
 
   _press = () =>
@@ -281,6 +285,7 @@ class CopilotModal extends Component<Props, State> {
             currentStepNumber={this.props.currentStepNumber}
         />*/}
       </Animated.View>,
+        <View style={{ position: 'absolute', backgroundColor: '#555657', padding: 6, bottom: this.buttonToTop ? undefined : 10, top: this.buttonToTop ? 10 : undefined }}><Text>Quitter le tutoriel</Text></View>,
       <Animated.View key="arrow" style={[styles.arrow, this.state.arrow]} />,
       <Animated.View key="tooltip" style={[styles.tooltip, this.props.tooltipStyle, this.state.tooltip]}>
         <TooltipComponent
@@ -291,6 +296,7 @@ class CopilotModal extends Component<Props, State> {
             handlePrev={this.handlePrev}
             handleStop={this.handleStop}
             labels={this.props.labels}
+            buttonToTop={this.buttonToTop}
         />
       </Animated.View>,
     ];
