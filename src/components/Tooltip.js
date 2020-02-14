@@ -45,10 +45,10 @@ const Tooltip = ({
         paddingHorizontal: 15,
         backgroundColor: '#fff',
         borderRadius: 10,
+        marginBottom: 0,
     }]}>
       <Text testID="stepDescription" style={styles.tooltipText}>{currentStep.text}</Text>
     </View>
-    <View style={[styles.bottomBar]}>
 		{!buttonToTop
 			? (
 				<View style={[styles.bottomBar]}>
@@ -78,7 +78,6 @@ const Tooltip = ({
         <TouchableOpacity onPress={handleNext}>
             <Button>{labels.next || 'Next'}</Button>
         </TouchableOpacity> :*/}
-    </View>
   </View>
 );
 

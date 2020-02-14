@@ -34,7 +34,7 @@ class ViewMask extends Component<Props, State> {
     };
     
     componentWillReceiveProps(nextProps) {
-        console.warn('componentWillReceiveProps', nextProps.size, this.props.size);
+        //console.warn('componentWillReceiveProps', nextProps.size, this.props.size);
         if (this.props.position !== nextProps.position || this.props.size !== nextProps.size) {
             this.animate(nextProps.size, nextProps.position);
         }
@@ -62,7 +62,7 @@ class ViewMask extends Component<Props, State> {
     }
     _press = () =>
     {
-        console.warn('press');
+        //console.warn('press');
         const { onPress, currentStep } = this.props;
         if(onPress)
         {
@@ -73,7 +73,7 @@ class ViewMask extends Component<Props, State> {
     render() {
         const { size, position } = this.state;
         
-        console.warn('render background', size, position, 'props', this.props.size, this.props.position, this.props.layout.width);
+        //console.warn('render background', size, position, 'props', this.props.size, this.props.position, this.props.layout.width);
         const width = this.props.layout ? this.props.layout.width : 500;
         const height = this.props.layout ? this.props.layout.height : 500;
         
@@ -94,12 +94,12 @@ class ViewMask extends Component<Props, State> {
             bottom: (height + (-1 * (size.y + position.y))),
             left: position.x
         });*/
-        console.warn({
+        /*console.warn({
             right: rightFromWidthEnd,
             top: position.y,
             bottom: bottomFromHeightBottom,
             left: position.x
-        });
+        });*/
         
         return (
             <View pointerEvents="box-none" style={this.props.style}>

@@ -19,7 +19,7 @@ class ConnectedCopilotStep extends Component<Props> {
   };
 
   componentDidMount() {
-    console.warn('did mount', this.props.name, this.props.active);
+    //console.warn('did mount', this.props.name, this.props.active);
     if (this.props.active) {
       this.register();
     }
@@ -27,12 +27,12 @@ class ConnectedCopilotStep extends Component<Props> {
 
   componentDidUpdate(prevProps: Readonly<P>, prevState: Readonly<S>, snapshot: SS): void
   {
-    console.warn('did update', this.props.name, prevProps.active, this.props.active);
+    //console.warn('did update', this.props.name, prevProps.active, this.props.active);
     /*if (prevProps.active !== this.props.active) {*/
       if (this.props.active) {
         if(this.isRegister() === false)
         {
-          console.warn('register');
+          //console.warn('register');
           this.register();
         }
       } else {
@@ -64,7 +64,7 @@ class ConnectedCopilotStep extends Component<Props> {
   }
 
   unregister() {
-    console.warn('unregister from connected');
+    //console.warn('unregister from connected');
     this.props._copilot.unregisterStep(this.props.name);
   }
 
@@ -80,14 +80,14 @@ class ConnectedCopilotStep extends Component<Props> {
         // Wait until the wrapper element appears
         if (this.wrapper)
         {
-          if (Platform.OS === 'android')
-          {
-            if(offset)
+         /* if (Platform.OS === 'android')
+          {*/
+            /*if(offset)
             {
               const sizeResolved = await this._measureLayout(flatList);
               if(sizeResolved)
               {
-                console.warn('measureLaytou', sizeResolved);
+                //console.warn('measureLaytou', sizeResolved);
                 resolve({
                   x: sizeResolved.x, y: sizeResolved.y - offset, width: sizeResolved.width, height: sizeResolved.height,
                 });
@@ -97,14 +97,14 @@ class ConnectedCopilotStep extends Component<Props> {
                 resolve(false);
               }
               return;
-            }
+            }*/
               if (this.wrapper.measureInWindow)
               {
                   this.wrapper.measureInWindow((x, y, width, height) =>
                   {
-                    console.warn('measureInWindow2', {
+                    /*console.warn('measureInWindow2', {
                       x, y, width, height,
-                    });
+                    });*/
         
                       resolve({
                         x,
@@ -120,7 +120,7 @@ class ConnectedCopilotStep extends Component<Props> {
                 requestAnimationFrame(measure);
               }
             
-          }
+         /* }
           else {
             if (this.wrapper.measure)
             {
@@ -135,7 +135,7 @@ class ConnectedCopilotStep extends Component<Props> {
             {
               requestAnimationFrame(measure);
             }
-          }
+          }*/
         } else {
           requestAnimationFrame(measure);
         }
@@ -147,15 +147,15 @@ class ConnectedCopilotStep extends Component<Props> {
   
   _measureLayout(flatList) {
     return new Promise(async (resolve, reject) => {
-      console.warn('promise');
+      //console.warn('promise');
       const resize = await this.wrapper.measureLayout(ReactNative.findNodeHandle(flatList), (x, y, width, height) =>
       {
-        console.warn('measureLayout', {
+        /*console.warn('measureLayout', {
           x,
           y,
           width,
           height,
-        });
+        });*/
         resolve({
           x,
           y,

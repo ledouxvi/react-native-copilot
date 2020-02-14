@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from 'react';
-import { Animated, Easing, View, NativeModules, Modal, StatusBar, Platform, Text, TouchableOpacity } from 'react-native';
+import { Animated, Easing, View, NativeModules, Modal, StatusBar, Platform, Text, TouchableOpacity, SafeAreaView } from 'react-native';
 import Tooltip from './Tooltip';
 import StepNumber from './StepNumber';
 import styles, { MARGIN, ARROW_SIZE, STEP_NUMBER_DIAMETER, STEP_NUMBER_RADIUS } from './style';
@@ -56,6 +56,8 @@ class CopilotModal extends Component<Props, State> {
     androidStatusBarVisible: true,
     backdropColor: 'rgba(0, 0, 0, 0.4)',
     labels: {},
+    insetTop: 0,
+    insetBottom: 0,
   };
   
   state = {
@@ -81,7 +83,7 @@ class CopilotModal extends Component<Props, State> {
   }
   
   handleLayoutChange = ({ nativeEvent: { layout } }) => {
-    console.warn('handleChange', layout)
+    //console.warn('handleChange', layout)
     this.layout = layout;
   }
   
@@ -119,7 +121,7 @@ class CopilotModal extends Component<Props, State> {
         stepNumberLeft = layout.width - STEP_NUMBER_DIAMETER;
       }
     }
-    console.warn('obvj', obj);
+    //console.warn('obvj', obj);
     const center = {
       x: obj.left + (obj.width / 2),
       y: obj.top + (obj.height / 2),
@@ -267,7 +269,11 @@ class CopilotModal extends Component<Props, State> {
       labelLeave,
       onPressLeave,
       stepNumberComponent: StepNumberComponent,
+      insetTop,
+      insetBottom,
     } = this.props;
+    
+    //console.warn('insetTop', insetTop);
     
     return [
       <Animated.View
@@ -287,7 +293,7 @@ class CopilotModal extends Component<Props, State> {
             currentStepNumber={this.props.currentStepNumber}
         />*/}
       </Animated.View>,
-      <View style={{ position: 'absolute', left: 0, right: 0, bottom: this.buttonToTop ? undefined : 10, top: this.buttonToTop ? 10 : undefined, justifyContent: 'center', alignItems: 'center' }}>
+      <View key="leaveButton" style={{ position: 'absolute', left: 0, right: 0, bottom: this.buttonToTop ? undefined : (10 + (Platform.OS == 'ios' ? insetBottom : 0)), top: this.buttonToTop ? (10 + (Platform.OS == 'ios' ? insetTop : 0)) : undefined, justifyContent: 'center', alignItems: 'center' }}>
         <TouchableOpacity style={{ backgroundColor: '#555657', padding: 6, borderRadius: 10, justifyContent: 'center', alignItems: 'center' }} onPress={onPressLeave}>
           <Text style={{ color: '#FFFFFF', fontSize: 20}}>{labelLeave}</Text>
         </TouchableOpacity>
@@ -320,13 +326,13 @@ class CopilotModal extends Component<Props, State> {
             transparent
             supportedOrientations={['portrait', 'landscape']}
         >
-          <View
-              style={styles.container}
-              onLayout={this.handleLayoutChange}
-          >
-            {contentVisible && this.renderMask()}
-            {contentVisible && this.renderTooltip()}
-          </View>
+            <View
+                style={styles.container}
+                onLayout={this.handleLayoutChange}
+            >
+              {contentVisible && this.renderMask()}
+              {contentVisible && this.renderTooltip()}
+            </View>
         </Modal>
     );
   }

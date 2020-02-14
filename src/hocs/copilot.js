@@ -31,6 +31,8 @@ type State = {
   androidStatusBarVisible: boolean,
   backdropColor: string,
   flatList: React.RefObject,
+  iosTopInset: number,
+  iosBottomInset:number,
 };
 
 const copilot = ({
@@ -54,6 +56,8 @@ const copilot = ({
           currentStep: null,
           visible: false,
           flatList: null,
+          iosTopInset: 0,
+          iosBottomInset: 0,
         };
         
         getChildContext(): { _copilot: CopilotContext } {
@@ -88,6 +92,17 @@ const copilot = ({
         getNextStep = (step: ?Step = this.state.currentStep): ?Step =>
             getNextStep(this.state.steps, step);
         
+        setInsetBottom = (inset) =>
+        {
+          this.state.iosBottomInset = inset;
+        }
+  
+        setInsetTop = (inset) =>
+        {
+          //console.warn('top inset', inset);
+          this.state.iosTopInset = inset;
+        }
+        
         setCurrentStep = async (step: Step, move?: boolean = true): void => {
           await this.setState({ currentStep: step });
           this.eventEmitter.emit('stepChange', step);
@@ -102,24 +117,25 @@ const copilot = ({
                 return;
               }
               this.maxRetry += 1;
-              console.warn('TRY RESOLVED LAYOUT');
+              //console.warn('TRY RESOLVED LAYOUT');
               requestAnimationFrame(() => this.setCurrentStep(step, move));
               return;
             }
             
             const index = step.target.props.index;
+            const initialOffset = step.target.props.initialOffset;
             const indexOffset = step.target.props.indexOffset ? step.target.props.indexOffset : 280;
             const indexSuggest = step.target.props.indexSuggest;
             const indexSuggestOffset = step.target.props.indexSuggestOffset ? step.target.props.indexSuggestOffset : 182;
             const totalHeight = step.target.props.countItem * indexOffset + indexSuggestOffset;
             this.offset = Math.max(0, /*96 +*/index * indexOffset);
-            console.warn('setCurrentStep index', index);
-            console.warn('setCurrentStep indexOffset', indexOffset);
-            console.warn('setCurrentStep indexSuggest', indexSuggest);
-            console.warn('setCurrentStep indexSuggestOffset', indexSuggestOffset);
-            console.warn('setCurrentStep countItem', step.target.props.countItem);
-            console.warn('setCurrentStep totalHeight', totalHeight);
-            console.warn('setCurrentStep this.offset', this.offset);
+            //console.warn('setCurrentStep index', index);
+            //console.warn('setCurrentStep indexOffset', indexOffset);
+            //console.warn('setCurrentStep indexSuggest', indexSuggest);
+            //console.warn('setCurrentStep indexSuggestOffset', indexSuggestOffset);
+            //console.warn('setCurrentStep countItem', step.target.props.countItem);
+            //console.warn('setCurrentStep totalHeight', totalHeight);
+            //console.warn('setCurrentStep this.offset', this.offset);
             if(indexSuggest < index)
             {
               this.offset += indexSuggestOffset;
@@ -128,9 +144,13 @@ const copilot = ({
                 this.offset -= indexOffset;
               }
             }
-            console.warn('setCurrentStep this.offset last', this.offset);
-            console.warn('startMeasure', indexSuggest, index);
-            console.warn('layout', this.state.layout);
+            if(Platform.OS === 'ios')
+            {
+              this.offset -= initialOffset;
+            }
+            //console.warn('setCurrentStep this.offset last', this.offset);
+            //console.warn('startMeasure', indexSuggest, index);
+            //console.warn('layout', this.state.layout);
            
             
             if(totalHeight - this.offset < this.state.layout.height)
@@ -138,7 +158,7 @@ const copilot = ({
               this.offset = totalHeight - this.offset;
             }
   
-            console.warn('setCurrentStep this.offset reajust', this.offset);
+            //console.warn('setCurrentStep this.offset reajust', this.offset, this.state.iosTopInset, this.state.iosBottomInset);
            /* console.warn(offset);
             if (!this.props.androidStatusBarVisible && Platform.OS === 'android') {
               offset -= StatusBar.currentHeight; // eslint-disable-line no-param-reassign
@@ -163,13 +183,13 @@ const copilot = ({
               return;
             }
             this.maxRetry += 1;
-            console.warn('currentStep', this.state.currentStep);
-            console.warn('TRY RESOLVED SIZE');
+            //console.warn('currentStep', this.state.currentStep);
+            //console.warn('TRY RESOLVED SIZE');
             this.state.currentStep = this.state.steps[this.state.currentStep.name];
             requestAnimationFrame(() => this._timeout(move));
             return;
           }
-          console.warn(size);
+          //console.warn(size);
           this.moveToCurrentStep();
         }
       }
@@ -190,7 +210,7 @@ const copilot = ({
         isLastStep = (): boolean => this.state.currentStep === this.getLastStep();
         
         registerStep = (step: Step): void => {
-          console.warn('register step', step.name);
+          //console.warn('register step', step.name);
           this.setState(({ steps }) => ({
             steps: {
               ...steps,
@@ -200,29 +220,29 @@ const copilot = ({
         }
         
         isRegisterStep = (wrapper, stepName: string): boolean => {
-          console.warn('isRegisterStep ' + stepName, this.state.steps[stepName] ? true : false);
+          //console.warn('isRegisterStep ' + stepName, this.state.steps[stepName] ? true : false);
           const already = this.state.steps[stepName] ? true : false;
           if(!already)
           {
-            console.warn('already register');
+            //console.warn('already register');
             return false;
           }
           const step = this.state.steps[stepName].target.wrapper;
           if(!step)
           {
-            console.warn('new wrapper');
+            //console.warn('new wrapper');
             return false;
           }
   
           const tagStep = ReactNative.findNodeHandle(step);
           const tagWrapper = ReactNative.findNodeHandle(wrapper);
-          console.warn('tagStep', tagStep);
-          console.warn('tagWrapper', tagWrapper);
+          //console.warn('tagStep', tagStep);
+          //console.warn('tagWrapper', tagWrapper);
           return  tagStep === tagWrapper;
         }
         
         unregisterStep = (stepName: string): void => {
-          console.warn('unregister step', stepName);
+          //console.warn('unregister step', stepName);
           if (!this.mounted) {
             return;
           }
@@ -243,8 +263,8 @@ const copilot = ({
         
         start = async (fromStep?: string, flatList, layout): void => {
           const { steps } = this.state;
-          console.warn('start step', fromStep);
-          console.warn('start flatlist', flatList ? true : false);
+          //console.warn('start step', fromStep);
+          //console.warn('start flatlist', flatList ? true : false);
           const currentStep = fromStep
               ? steps[fromStep]
               : this.getFirstStep();
@@ -272,12 +292,12 @@ const copilot = ({
   
         updateFlatlist = async (flatlist) =>
         {
-          console.warn('resync flatlist', flatlist, ReactNative.findNodeHandle(flatlist));
+          //console.warn('resync flatlist', flatlist, ReactNative.findNodeHandle(flatlist));
           this.state.flatList = flatlist ? flatlist : null;
         }
         updateLayout = async (layout) =>
         {
-          console.warn('resync layout', layout);
+          //console.warn('resync layout', layout);
           this.state.layout = layout;
         }
         
@@ -298,10 +318,10 @@ const copilot = ({
         }
         
         async moveToCurrentStep(): void {
-        	console.warn('this.state.flatList', this.state.flatList ? true : false);
+        	//console.warn('this.state.flatList', this.state.flatList ? true : false);
          
           const size = await this.state.currentStep.target.measure( this.offset, this.state.flatList);
-          console.warn('OnMove', size);
+          //console.warn('OnMove', size);
           await this.modal.animateMove({
             width: size.width + OFFSET_WIDTH,
             height: size.height + OFFSET_WIDTH,
@@ -314,38 +334,42 @@ const copilot = ({
         render() {
           return (
               <View style={wrapperStyle || { flex: 1 }}>
-                <WrappedComponent
-                    {...this.props}
-                    start={this.start}
-                    stop={this.stop}
-                    updateFlatlist={this.updateFlatlist}
-                    updateLayout={this.updateLayout}
-                    currentStep={this.state.currentStep}
-                    visible={this.state.visible}
-                    copilotEvents={this.eventEmitter}
-                />
-                <CopilotModal
-                    next={this.next}
-                    prev={this.prev}
-                    stop={this.stop}
-                    onPress={this._onPressCopilot}
-                    visible={this.state.visible}
-                    isFirstStep={this.isFirstStep()}
-                    isLastStep={this.isLastStep()}
-                    currentStepNumber={this.getStepNumber()}
-                    currentStep={this.state.currentStep}
-                    stepNumberComponent={stepNumberComponent}
-                    tooltipComponent={tooltipComponent}
-                    tooltipStyle={tooltipStyle}
-                    overlay={overlay}
-                    labelLeave={labelLeave}
-                    onPressLeave={this._onPressLeave}
-                    animated={animated}
-                    androidStatusBarVisible={androidStatusBarVisible}
-                    backdropColor={backdropColor}
-                    svgMaskPath={svgMaskPath}
-                    ref={(modal) => { this.modal = modal; }}
-                />
+                  <WrappedComponent
+                      {...this.props}
+                      start={this.start}
+                      stop={this.stop}
+                      setInsetBottom={this.setInsetBottom}
+                      setInsetTop={this.setInsetTop}
+                      updateFlatlist={this.updateFlatlist}
+                      updateLayout={this.updateLayout}
+                      currentStep={this.state.currentStep}
+                      visible={this.state.visible}
+                      copilotEvents={this.eventEmitter}
+                  />
+                  <CopilotModal
+                      next={this.next}
+                      prev={this.prev}
+                      stop={this.stop}
+                      onPress={this._onPressCopilot}
+                      visible={this.state.visible}
+                      isFirstStep={this.isFirstStep()}
+                      isLastStep={this.isLastStep()}
+                      currentStepNumber={this.getStepNumber()}
+                      currentStep={this.state.currentStep}
+                      stepNumberComponent={stepNumberComponent}
+                      tooltipComponent={tooltipComponent}
+                      tooltipStyle={tooltipStyle}
+                      insetTop={this.state.iosTopInset}
+                      insetBottom={this.state.iosBottomInset}
+                      overlay={overlay}
+                      labelLeave={labelLeave}
+                      onPressLeave={this._onPressLeave}
+                      animated={animated}
+                      androidStatusBarVisible={androidStatusBarVisible}
+                      backdropColor={backdropColor}
+                      svgMaskPath={svgMaskPath}
+                      ref={(modal) => { this.modal = modal; }}
+                  />
               </View>
           );
         }
