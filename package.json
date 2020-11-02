@@ -1,34 +1,41 @@
 {
-  "name": "react-native-copilot",
-  "version": "2.4.7",
-  "description": "Make an interactive step by step tour guide for you react-native app",
-  "main": "src/index.js",
-  "private": false,
-  "scripts": {
-    "lint": "eslint src/",
-    "test": "jest src/"
-  },
-  "repository": {
+  "_from": "git+https://github.com/ledouxvi/react-native-copilot.git",
+  "_id": "react-native-copilot@2.4.7",
+  "_inBundle": false,
+  "_integrity": "",
+  "_location": "/react-native-copilot",
+  "_phantomChildren": {},
+  "_requested": {
     "type": "git",
-    "url": "git+https://github.com/mohebifar/react-native-copilot.git"
+    "raw": "react-native-copilot@git+https://github.com/ledouxvi/react-native-copilot.git",
+    "name": "react-native-copilot",
+    "escapedName": "react-native-copilot",
+    "rawSpec": "git+https://github.com/ledouxvi/react-native-copilot.git",
+    "saveSpec": "git+https://github.com/ledouxvi/react-native-copilot.git",
+    "fetchSpec": "https://github.com/ledouxvi/react-native-copilot.git",
+    "gitCommittish": null
   },
-  "keywords": [
-    "react-native",
-    "react-native-joyride",
-    "react",
-    "copilot",
-    "intro.js",
-    "intro"
+  "_requiredBy": [
+    "/"
   ],
-  "files": [
-    "src"
-  ],
-  "author": "Mohamad Mohebifar <mohamad@mohebifar.com>",
-  "license": "MIT",
+  "_resolved": "git+https://github.com/ledouxvi/react-native-copilot.git#ab6bbeaa54005fff54249faa795e9f5d623312ff",
+  "_spec": "react-native-copilot@git+https://github.com/ledouxvi/react-native-copilot.git",
+  "_where": "/Users/utilisateur/Documents/phenix_app",
+  "author": {
+    "name": "Mohamad Mohebifar",
+    "email": "mohamad@mohebifar.com"
+  },
   "bugs": {
     "url": "https://github.com/mohebifar/react-native-copilot/issues"
   },
-  "homepage": "https://github.com/mohebifar/react-native-copilot#readme",
+  "bundleDependencies": false,
+  "dependencies": {
+    "hoist-non-react-statics": "^3.0.1",
+    "react-native-progress": "4.1.2",
+    "mitt": "^1.1.3"
+  },
+  "deprecated": false,
+  "description": "Make an interactive step by step tour guide for you react-native app",
   "devDependencies": {
     "babel-eslint": "^8.0.1",
     "babel-jest": "^21.2.0",
@@ -48,6 +55,10 @@
     "react-native-svg": "^9.5.1",
     "react-test-renderer": ">=16.8.0"
   },
+  "files": [
+    "src"
+  ],
+  "homepage": "https://github.com/mohebifar/react-native-copilot#readme",
   "jest": {
     "preset": "react-native",
     "transform": {
@@ -63,8 +74,25 @@
       "__TEST__": true
     }
   },
-  "dependencies": {
-    "hoist-non-react-statics": "^3.0.1",
-    "mitt": "^1.1.3"
-  }
+  "keywords": [
+    "react-native",
+    "react-native-joyride",
+    "react",
+    "copilot",
+    "intro.js",
+    "intro"
+  ],
+  "license": "MIT",
+  "main": "src/index.js",
+  "name": "react-native-copilot",
+  "private": false,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mohebifar/react-native-copilot.git"
+  },
+  "scripts": {
+    "lint": "eslint src/",
+    "test": "jest src/"
+  },
+  "version": "2.4.7"
 }
