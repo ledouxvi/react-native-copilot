@@ -14,6 +14,7 @@ type Props = {
   onPress: () => void,
   currentStepNumber: number,
   currentStep: ?Step,
+  stopBetween: boolean,
   visible: boolean,
   isFirstStep: boolean,
   isLastStep: boolean,
@@ -49,6 +50,7 @@ class CopilotModal extends Component<Props, State> {
     animationDuration: 400,
     tooltipComponent: Tooltip,
     tooltipStyle: {},
+    totalSteps: 0,
     stepNumberComponent: StepNumber,
     // If react-native-svg native module was avaialble, use svg as the default overlay component
     overlay: typeof NativeModules.RNSVGSvgViewManager !== 'undefined' ? 'svg' : 'view',
@@ -57,6 +59,7 @@ class CopilotModal extends Component<Props, State> {
     androidStatusBarVisible: true,
     backdropColor: 'rgba(0, 0, 0, 0.4)',
     labels: {},
+    stopBetween: false,
     insetTop: 0,
     insetBottom: 0,
   };
@@ -74,6 +77,7 @@ class CopilotModal extends Component<Props, State> {
 
   componentWillReceiveProps(nextProps: Props) {
     if (this.props.visible === true && nextProps.visible === false) {
+      console.warn('reset componentWillReceiveProps');
       this.reset();
     }
   }
@@ -229,7 +233,10 @@ class CopilotModal extends Component<Props, State> {
   }
 
   handleStop = () => {
-    this.reset();
+    if(this.props.stopBetween)
+    {
+      this.reset();
+    }
     /*this.props.stop();*/
     this._press();
   }
@@ -273,9 +280,10 @@ class CopilotModal extends Component<Props, State> {
       stepNumberComponent: StepNumberComponent,
       insetTop,
       insetBottom,
+      totalSteps,
+        currentStep,
     } = this.props;
-
-    //console.warn('insetTop', insetTop);
+    console.warn(this.state.tooltip);
 
     return [
       <Animated.View
@@ -295,16 +303,21 @@ class CopilotModal extends Component<Props, State> {
             currentStepNumber={this.props.currentStepNumber}
         />*/}
       </Animated.View>,
-      <View key="leaveButton" style={{ position: 'absolute', left: 0, right: 0, bottom: this.buttonToTop ? undefined : (10 + (Platform.OS == 'ios' ? insetBottom : 0)), top: this.buttonToTop ? (10 + (Platform.OS == 'ios' ? insetTop : 0)) : undefined, justifyContent: 'center', alignItems: 'center' }}>
-        <Bar progress={0.3} width={null}/>
-      </View>,
-      <View key="leaveButton" style={{ position: 'absolute', left: 0, right: 0, bottom: this.buttonToTop ? undefined : (10 + (Platform.OS == 'ios' ? insetBottom : 0)), top: this.buttonToTop ? (10 + (Platform.OS == 'ios' ? insetTop : 0)) : undefined, justifyContent: 'center', alignItems: 'center' }}>
-        <TouchableOpacity style={{ backgroundColor: '#555657', padding: 6, borderRadius: 10, justifyContent: 'center', alignItems: 'center' }} onPress={onPressLeave}>
-          <Text style={{ color: '#FFFFFF', fontSize: 20}}>{labelLeave}</Text>
-        </TouchableOpacity>
+      <View key="leaveButton" style={{ position: 'absolute', left: 10, right: 10, bottom: this.buttonToTop ? undefined : (10 + (Platform.OS == 'ios' ? insetBottom : 0)), top: this.buttonToTop ? (10 + (Platform.OS == 'ios' ? insetTop : 0)) : undefined }}>
+        {totalSteps > 0 && !this.buttonToTop
+          ? <Bar progress={currentStep.order/totalSteps} width={null} unfilledColor="#FFFFFF" borderWidth={0} color="#009ddf" height={10}/>
+          : null}
+        <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: this.buttonToTop ? 0 : 10, marginBottom: this.buttonToTop ? 10 : 0 }}>
+          <TouchableOpacity style={{ backgroundColor: '#555657', padding: 6, borderRadius: 10, justifyContent: 'center', alignItems: 'center' }} onPress={onPressLeave}>
+            <Text style={{ color: '#FFFFFF', fontSize: 20}}>{labelLeave}</Text>
+          </TouchableOpacity>
+        </View>
+        {totalSteps > 0  && this.buttonToTop
+            ? <Bar progress={currentStep.order/totalSteps} width={null} unfilledColor="#FFFFFF" borderWidth={0} color="#009ddf" height={10}/>
+            : null}
       </View>,
       <Animated.View key="arrow" style={[styles.arrow, this.state.arrow]} />,
-      <Animated.View key="tooltip" style={[styles.tooltip, this.props.tooltipStyle, this.state.tooltip]}>
+      <Animated.View key="tooltip" style={[styles.tooltip, this.props.tooltipStyle, { top: this.state.tooltip.top, bottom: this.state.tooltip.bottom }]}>
         <TooltipComponent
             isFirstStep={this.props.isFirstStep}
             isLastStep={this.props.isLastStep}
@@ -332,7 +345,7 @@ class CopilotModal extends Component<Props, State> {
             supportedOrientations={['portrait', 'landscape']}
         >
             <View
-                style={styles.container}
+                style={[styles.container]}
                 onLayout={this.handleLayoutChange}
             >
               {contentVisible && this.renderMask()}

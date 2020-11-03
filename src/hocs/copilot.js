@@ -43,6 +43,8 @@ const copilot = ({
                    animated,
                    labels,
                    androidStatusBarVisible,
+                   totalSteps,
+                   stopBetween,
                    backdropColor,
                    svgMaskPath,
                    verticalOffset = 0,
@@ -285,6 +287,7 @@ const copilot = ({
             requestAnimationFrame(() => this.start(fromStep, flatList, layout));
           } else {
             this.eventEmitter.emit('start');
+            console.warn('start tuto');
             await this.setCurrentStep(currentStep);
             await this.moveToCurrentStep();
             await this.setVisibility(true);
@@ -354,11 +357,13 @@ const copilot = ({
                       stop={this.stop}
                       onPress={this._onPressCopilot}
                       visible={this.state.visible}
+                      stopBetween={stopBetween}
                       isFirstStep={this.isFirstStep()}
                       isLastStep={this.isLastStep()}
                       currentStepNumber={this.getStepNumber()}
                       currentStep={this.state.currentStep}
                       stepNumberComponent={stepNumberComponent}
+                      totalSteps={totalSteps}
                       tooltipComponent={tooltipComponent}
                       tooltipStyle={tooltipStyle}
                       insetTop={this.state.iosTopInset}

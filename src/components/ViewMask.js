@@ -32,14 +32,14 @@ class ViewMask extends Component<Props, State> {
         size: new Animated.ValueXY({ x: 0, y: 0 }),
         position: new Animated.ValueXY({ x: 0, y: 0 }),
     };
-    
+
     componentWillReceiveProps(nextProps) {
         //console.warn('componentWillReceiveProps', nextProps.size, this.props.size);
         if (this.props.position !== nextProps.position || this.props.size !== nextProps.size) {
             this.animate(nextProps.size, nextProps.position);
         }
     }
-    
+
     animate = (size: valueXY = this.props.size, position: valueXY = this.props.position): void => {
         if (this.state.animated) {
             Animated.parallel([
@@ -71,14 +71,14 @@ class ViewMask extends Component<Props, State> {
             onPress(currentStep);
         }
     }
-    
+
     render() {
         const { size, position } = this.state;
-        
+
         //console.warn('render background', size, position, 'props', this.props.size, this.props.position, this.props.layout.width);
         const width = this.props.layout ? this.props.layout.width : 500;
         const height = this.props.layout ? this.props.layout.height : 500;
-        
+
         const leftOverlayRight = Animated.add(width, Animated.multiply(position.x, -1));
         const rightOverlayLeft = Animated.add(size.x, position.x);
         const bottomFromHeightBottom = Animated.add(height, Animated.multiply(-1, Animated.add(size.y, position.y)));
@@ -89,7 +89,7 @@ class ViewMask extends Component<Props, State> {
         const verticalOverlayRightBoundary = Animated.add(
             width, Animated.multiply(-1, rightOverlayLeft),
         );
-        
+
         /*console.warn('data', {
             right: (width + (-1 * (size.x + position.x))),
             top: position.y,
@@ -102,7 +102,7 @@ class ViewMask extends Component<Props, State> {
             bottom: bottomFromHeightBottom,
             left: position.x
         });*/
-        
+
         return (
             <View pointerEvents="box-none" style={this.props.style}>
                 <Animated.View
@@ -143,7 +143,7 @@ class ViewMask extends Component<Props, State> {
                         },
                     ]}
                 />
-                
+
                 <TouchableWithoutFeedback onPress={this._press}>
                     <Animated.View
                         style={[
