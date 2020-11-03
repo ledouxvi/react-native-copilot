@@ -77,7 +77,6 @@ class CopilotModal extends Component<Props, State> {
 
   componentWillReceiveProps(nextProps: Props) {
     if (this.props.visible === true && nextProps.visible === false) {
-      console.warn('reset componentWillReceiveProps');
       this.reset();
     }
   }
@@ -283,7 +282,6 @@ class CopilotModal extends Component<Props, State> {
       totalSteps,
         currentStep,
     } = this.props;
-    console.warn(this.state.tooltip);
 
     return [
       <Animated.View
@@ -335,7 +333,6 @@ class CopilotModal extends Component<Props, State> {
   render() {
     const containerVisible = this.state.containerVisible || this.props.visible;
     const contentVisible = this.state.layout && containerVisible;
-
     return (
         <Modal
             animationType="none"

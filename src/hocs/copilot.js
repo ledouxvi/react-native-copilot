@@ -287,7 +287,6 @@ const copilot = ({
             requestAnimationFrame(() => this.start(fromStep, flatList, layout));
           } else {
             this.eventEmitter.emit('start');
-            console.warn('start tuto');
             await this.setCurrentStep(currentStep);
             await this.moveToCurrentStep();
             await this.setVisibility(true);
